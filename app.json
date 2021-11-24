@@ -3,9 +3,7 @@
     "name": "bodybuilder-app",
     "slug": "bodybuilder-app",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
+    "assetBundlePatterns": ["**/*"]
   },
   "name": "bodybuilder-app"
 }

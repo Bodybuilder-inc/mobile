@@ -19,8 +19,11 @@
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
     "no-use-before-define": "off",
+    "no-unused-vars": "off",
     "@typescript-eslint/no-use-before-define": 0,
+    "global-require": "off",
     "react/jsx-filename-extension": "off",
+    "react/jsx-props-no-spreading": "off",
     "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "react/style-prop-object": [
       "off",
@@ -29,6 +32,10 @@
       }
     ],
     "arrow-body-style": "off",
+    "react/require-default-props": "off",
+    "camelcase": "off",
+    "react/self-closing-comp": "off",
+    "no-unneeded-ternary": "off",
     "prefer-arrow-callback": "off",
     "import/prefer-default-export": "off",
     "import/extensions": [
