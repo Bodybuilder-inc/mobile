@@ -14,6 +14,16 @@ interface User {
   user: {
     email: string;
     name: string;
+    birthday: Date;
+    telephone: string;
+    address: {
+      street: string;
+      number: number;
+      district: string;
+      city: string;
+      uf: string;
+      cep: string;
+    };
   };
 }
 

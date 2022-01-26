@@ -29,6 +29,9 @@ import {
   BackButton,
   UserAvatarButton,
   UserAvatar,
+  CreateAccountButton,
+  CreateAccountButtonText,
+  WrapperButtonExit,
   Title,
 } from './styles';
 
@@ -41,7 +44,7 @@ interface ProfileFormData {
 }
 
 const Profile: React.FC = () => {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, signOut } = useAuth();
   const navigation = useNavigation();
 
   const formRef = useRef<FormHandles>(null);
@@ -107,7 +110,7 @@ const Profile: React.FC = () => {
           abortEarly: false,
         });
 
-        const res = await api.put('/profile', formData);
+        const res = await api.put('/students/profile', formData);
         updateUser(res.data);
 
         Alert.alert('Perfil atualizado com sucesso!');
@@ -131,36 +134,6 @@ const Profile: React.FC = () => {
     [navigation],
   );
 
-  const handleUpdateAvatar = useCallback(() => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        quality: 0.5,
-      },
-      resp => {
-        if (resp.didCancel) {
-          return;
-        }
-        if (resp.errorCode) {
-          Alert.alert('Error ao atualizar seu avatar', resp.errorMessage);
-          return;
-        }
-
-        const data = new FormData();
-
-        data.append('avatar', {
-          type: 'image/jpeg',
-          name: `${user.id}.jpg`,
-          uri: resp.uri,
-        });
-
-        api.patch('users/avatar', data).then(response => {
-          updateUser(response.data);
-        });
-      },
-    );
-  }, [user.id, updateUser]);
-
   return (
     <>
       <KeyboardAvoidingView
@@ -177,7 +150,7 @@ const Profile: React.FC = () => {
               <Icon name="chevron-left" size={24} color="#999591" />
             </BackButton>
 
-            <UserAvatarButton onPress={handleUpdateAvatar}>
+            <UserAvatarButton onPress={() => {}}>
               <UserAvatar source={imageUserAvatarUrl('')} />
             </UserAvatarButton>
 
@@ -189,7 +162,7 @@ const Profile: React.FC = () => {
               <Input
                 autoCorrect={false}
                 autoCapitalize="words"
-                name="name"
+                name="user.name"
                 icon="user"
                 placeholder="Nome"
                 returnKeyType="next"
@@ -200,7 +173,7 @@ const Profile: React.FC = () => {
                 autoCapitalize="none"
                 autoCompleteType="off"
                 keyboardType="email-address"
-                name="email"
+                name="user.email"
                 icon="mail"
                 placeholder="E-mail"
                 returnKeyType="next"
@@ -249,208 +222,14 @@ const Profile: React.FC = () => {
             >
               Confirmar mudanças
             </Button>
-
-            <Button
-              onPress={() => {
-                formRef.current?.submitForm();
-              }}
-            >
-              Confirmar mudanças
-            </Button>
+            <WrapperButtonExit>
+              <CreateAccountButtonText onPress={signOut}>
+                Sair
+              </CreateAccountButtonText>
+            </WrapperButtonExit>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        enabled
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          style={{ flex: 1, marginBottom: 50 }}
-        >
-          <Container>
-            <View>
-              <Title>Crie sua conta</Title>
-            </View>
-
-            <Form ref={formRef} onSubmit={handleSignUp}>
-              <Input
-                autoCorrect={false}
-                autoCapitalize="words"
-                name="name"
-                icon="user"
-                placeholder="Nome"
-                returnKeyType="next"
-                onSubmitEditing={() => emailInputRef.current?.focus()}
-              />
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                keyboardType="email-address"
-                name="email"
-                icon="mail"
-                placeholder="E-mail"
-                returnKeyType="next"
-                ref={emailInputRef}
-                onSubmitEditing={() => telephoneInputRef.current?.focus()}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                keyboardType="phone-pad"
-                name="telephone"
-                icon="phone"
-                placeholder="Telefone"
-                returnKeyType="next"
-                ref={telephoneInputRef}
-                onSubmitEditing={() => birthdayInputRef.current?.focus()}
-              />
-
-              <OpenDatePickerButton onPress={hadleToggleDatePicker}>
-                <OpenDatePickerButtonText>
-                  Data de Nascimento
-                </OpenDatePickerButtonText>
-              </OpenDatePickerButton>
-
-              {showDatePicker && (
-                <DateTimePicker
-                  mode="date"
-                  display="default"
-                  textColor="#f4ede8"
-                  value={selectedDate}
-                  onChange={handleDateChanged}
-                />
-              )}
-              <Input
-                name="password"
-                icon="lock"
-                placeholder="Senha"
-                secureTextEntry
-                textContentType="newPassword"
-                returnKeyType="next"
-                ref={passwordInputRef}
-                onSubmitEditing={() => passwordConfirmInputRef.current?.focus()}
-              />
-              <Input
-                name="password_confirmation"
-                icon="lock"
-                placeholder="Confirmação da senha"
-                secureTextEntry
-                returnKeyType="send"
-                textContentType="newPassword"
-                ref={passwordConfirmInputRef}
-                onSubmitEditing={() => cepInputRef.current?.focus()}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                keyboardType="numeric"
-                name="cep"
-                icon="map-pin"
-                placeholder="CEP"
-                returnKeyType="next"
-                ref={cepInputRef}
-                onSubmitEditing={async event => {
-                  const resp = await apicep.get(
-                    `/${event.nativeEvent.text}/json`,
-                  );
-                  const address = resp.data as IAddress;
-                  setStreetVar(address.logradouro);
-                  setDistrictVar(address.bairro);
-                  setCityVar(address.localidade);
-                  setUfVar(address.uf);
-                  numberInputRef.current?.focus();
-                }}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                keyboardType="numeric"
-                name="number"
-                icon="home"
-                placeholder="Número"
-                returnKeyType="send"
-                ref={numberInputRef}
-                onSubmitEditing={() => {
-                  formRef.current?.submitForm();
-                }}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                name="street"
-                icon="map"
-                placeholder="Rua"
-                value={streetVar}
-                ref={streetInputRef}
-                editable={false}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                name="district"
-                icon="map"
-                placeholder="Bairro"
-                value={districtVar}
-                ref={districtInputRef}
-                editable={false}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                name="city"
-                icon="map"
-                placeholder="Cidade"
-                value={cityVar}
-                ref={cityInputRef}
-                editable={false}
-              />
-
-              <Input
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="off"
-                name="uf"
-                icon="map"
-                placeholder="UF"
-                value={ufVar}
-                ref={ufInputRef}
-                editable={false}
-              />
-            </Form>
-
-            <Button
-              onPress={() => {
-                formRef.current?.submitForm();
-              }}
-            >
-              Cadastrar
-            </Button>
-          </Container>
-        </ScrollView>
-      </KeyboardAvoidingView>
-
-      {!isKeyboardVisible && (
-        <BackToSignIn onPress={() => navigation.goBack()}>
-          <FeatherIcon name="arrow-left" size={20} color="#dd3434" />
-          <BackToSignInText>Voltar para login</BackToSignInText>
-        </BackToSignIn>
-      )}
     </>
   );
 };
