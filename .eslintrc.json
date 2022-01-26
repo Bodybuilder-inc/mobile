@@ -1,13 +1,16 @@
 {
   "env": {
-    "browser": true,
     "es2021": true
   },
   "extends": [
     "plugin:react/recommended",
     "airbnb",
+    "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
+  "globals": {
+    "__DEV__": "readonly"
+  },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -16,28 +19,16 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
-    "no-use-before-define": "off",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-use-before-define": 0,
-    "global-require": "off",
-    "react/jsx-filename-extension": "off",
-    "react/jsx-props-no-spreading": "off",
-    "prettier/prettier": ["error", { "endOfLine": "auto" }],
-    "react/style-prop-object": [
-      "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-filename-extension": [
+      1,
       {
-        "allow": "off"
+        "extensions": [".tsx"]
       }
     ],
-    "arrow-body-style": "off",
-    "react/require-default-props": "off",
-    "camelcase": "off",
-    "react/self-closing-comp": "off",
-    "no-unneeded-ternary": "off",
-    "prefer-arrow-callback": "off",
-    "import/prefer-default-export": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -45,17 +36,20 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "react/react-in-jsx-scope": "off",
+    "prettier/prettier": "off",
+    "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
+    "camelcase": "off",
+    "import/no-duplicates": "off"
   },
   "settings": {
-    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
     "import/resolver": {
-      "typescript": {
-        "directory": "./tsconfig.json"
-      }
+      "typescript": {}
     }
   }
 }

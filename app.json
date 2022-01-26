@@ -1,9 +1,4 @@
 {
-  "expo": {
-    "name": "bodybuilder-app",
-    "slug": "bodybuilder-app",
-    "version": "1.0.0",
-    "assetBundlePatterns": ["**/*"]
-  },
-  "name": "bodybuilder-app"
+  "name": "appgobarber",
+  "displayName": "appgobarber"
 }
